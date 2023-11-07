@@ -6,10 +6,15 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+//endpoint category
+const category = require('./routes/category');
+app.use("/category", category)
+
 //endpoint tutorial
 const tutorial = require('./routes/tutorial');
 app.use("/tutorial", tutorial)
 
+//endpoint detail
 const detail = require('./routes/detail');
 app.use("/detail", detail)
 

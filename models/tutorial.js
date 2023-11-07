@@ -11,30 +11,30 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.category,{
+        foreignKey: "id",
+        as: "category"
+      }),
       this.hasMany(models.detail,{
         foreignKey: "id_tutorial",
-        as: "detail tutorial"
+        as: "detail"
       })
     }
-  };
-
+  }
   tutorial.init({
-    id_tutorial: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    name: DataTypes.STRING,
-    picture: DataTypes.STRING,
-    detail: DataTypes.STRING,
+    id_category: DataTypes.INTEGER,
+    title: DataTypes.STRING,
     createdBy: DataTypes.INTEGER,
-    updatedBy: DataTypes.INTEGER,
-    status: DataTypes.ENUM('Active' , 'Inactive'),
-    category: DataTypes.ENUM('Dashboard' , 'Assistant')
+    updatedBy: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'tutorial',
-    tableName: "tutorial"
+    tableName: 'tutorial'
   });
   return tutorial;
 };

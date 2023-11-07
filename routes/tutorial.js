@@ -14,97 +14,111 @@ const model = require('../models/index');
 const tutorial = model.tutorial
 
 //endpoint menampilkan semua data tutorial, method: GET, function: findAll()
-app.get("/", (req,res) => {
-    tutorial.findAll()
-        .then(result => {
-            res.json({
-                tutorial : result
-            })
-        })
-        .catch(error => {
-            res.json({
-                message: error.message
-            })
-        })
+app.get("/", async (req,res) => {
+    let result = await tutorial.findAll({
+        include: [
+            "category"
+        ]
+    })
+    res.json(result)
 })
 
-app.get("/:id_tutorial", (req, res) => {
+app.get("/category/:id_category", async (req, res) => {
+    console.log(req.params.id_category);
+    let param = {id_category: req.params.id_category}
+    let result = await tutorial.findAll({
+        where: param,
+        order: [
+            ["id", "ASC"]
+        ],
+        include: [
+            "category"
+        ]
+    })
+    res.json(result)
+});
+
+app.get("/:id", async (req, res) => {
     tutorial
-    .findOne({ where: { id_tutorial: req.params.id_tutorial } })
+    .findOne({ 
+        where: { id: req.params.id },
+        include: [
+            {
+                model: model.detail,
+                as: "detail"
+            }
+        ] })
     .then((result) => {
-        res.json({
-            tutorial:result,
-        });
+        res.json(result);
     })
     .catch((error) => {
         res.json({
             message: error.message,
         });
     });
+    res.json(result)
 });
 
 //endpoint untuk menyimpan data tutorial, METHOD: POST, function: create
 app.post("/", (req,res) => {
     let dataBody = req.body;
+    if (dataBody instanceof Array) {
     for (let index = 0; index < dataBody.length; index++) {
         const element = dataBody[index];
-        
-        // let arrayPicture = [];
-        // if (element.picture1 != "") {
-        //     arrayPicture.push(element.picture1);
-        // }
-
-        // if (element.picture2 != "") {
-        //     arrayPicture.push(element.picture2);
-        // }
-
-        // if (element.picture3 != "") {
-        //     arrayPicture.push(element.picture3);
-        // }
 
         let data = {
-            name : element.name,
-            // picture1 : element.picture1,
-            // picture2 : element.picture2,
-            // picture3 : element.picture3,
-            picture : JSON.stringify(element.picture),
-            detail : element.detail,
+            id_category: element.id_category,
+            title : element.title,
             createdBy : req.query.user_id,
-            status : element.status,
-            category : element.category,
             createdAt : new Date,
             updatedAt : new Date
         }
-    
-        tutorial.create(data)
-            .catch(error => {
-                console.log(error);
-                res.json({
-                    message: error.message
+        if(dataBody.length==1){
+            tutorial.create(data)
+                .then(result => {
+                    console.log(result)
+                    res.json([result])
                 })
-                return;
-            })   
+                .catch(error => {
+                    console.log(error)
+                    res.json({
+                        message: error.message
+                    })
+                    return;
+                })
+        } else {
+            tutorial.create(data)
+                .then(result => {
+                    console.log(result)
+                })
+                .catch(error => {
+                    console.log(error)
+                    res.json({
+                        message: error.message
+                    })
+                    return;
+                })
+            }
     }
-
-    res.json({
-        message: "data has been inserted"
-    })
+    if(dataBody.length>1){
+        res.json(dataBody)
+        }
+    }
 })
 
 //endpoint mengupdate data tutorial, METHOD: PUT, function:update
 app.put("/:id", (req,res) => {
     let param = {
-        id_tutorial : req.params.id
+        id : req.params.id
     }
     let data = {
-        updatedBy : req.query.user_id,
-        status : req.body.status,
+        title : req.body.title,
+        updatedBy : req.query.user_id
+
     }
     tutorial.update(data, {where: param})
-        .then(result => {
-            res.json({
-                message: "data has been updated"
-            })
+        .then(() => {
+            res.json(data)
         })
         .catch(error => {
             res.json({
@@ -116,10 +130,10 @@ app.put("/:id", (req,res) => {
 //endpoint menghapus data tutorial, METHOD: DELETE, function: destroy
 app.delete("/:id", (req,res) => {
     let param = {
-        id_tutorial : req.params.id
+        id : req.params.id
     }
     tutorial.destroy({where: param})
-        .then(result => {
+        .then(() => {
             res.json({
                 message: "data has been deleted"
             })

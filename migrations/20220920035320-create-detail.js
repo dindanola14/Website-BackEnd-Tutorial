@@ -2,7 +2,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('detail', {
-      id_detail: {
+      id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -13,11 +13,11 @@ module.exports = {
         allowNull: false,
         references: {
           model: "tutorial",
-          key: "id_tutorial"
+          key: "id"
         }
       },
-      name: {
-        type: Sequelize.STRING
+      urutan: {
+        type: Sequelize.STRING,
       },
       deskripsi: {
         type: Sequelize.STRING

@@ -18,18 +18,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   detail.init({
-    id_detail: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     id_tutorial: DataTypes.INTEGER,
-    name: DataTypes.STRING,
+    urutan: DataTypes.STRING,
     deskripsi: DataTypes.STRING,
     picture: DataTypes.STRING,
     video: DataTypes.STRING,
     createdBy: DataTypes.INTEGER,
-    updatedBy: DataTypes.INTEGER
+    updatedBy: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'detail',

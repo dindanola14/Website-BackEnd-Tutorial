@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "postgres",
-    "password": "20050601",
-    "database": "tutorial",
-    "port": "5433",
+    "password": "ND6uBwsV1jnV",
+    "database": "support",
+    "host": "54.251.71.7",
     "dialect": "postgres"
   },
   "test": {
